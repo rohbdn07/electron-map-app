@@ -1,5 +1,7 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
-import path from 'path';
+import { app, BrowserWindow, ipcMain } from "electron";
+import path from "path";
+import { dbConnection } from "./database/connection";
+// import { dbConnection } from "./database/connection";
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
@@ -10,22 +12,29 @@ export function createAppWindow(): BrowserWindow {
   appWindow = new BrowserWindow({
     width: 1600,
     height: 800,
-    backgroundColor: '#FFF',
+    backgroundColor: "#FFF",
     show: true,
     frame: true,
     webPreferences: {
-      nodeIntegration: true,
+      nodeIntegration: false,
       contextIsolation: true,
       nodeIntegrationInWorker: false,
-      nodeIntegrationInSubFrames: false,
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
   });
+
+  // if (environment === "development") {
+  //   appWindow.webContents.openDevTools();
+  // }
+
   appWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
-  ipcMain.on('minimizeApp', () => {
+  // // call to connect database
+  // dbConnection();
+
+  ipcMain.on("minimizeApp", () => {
     appWindow.minimize();
-  })
+  });
 
   ipcMain.on("maximizeRestoreApp", () => {
     if (appWindow.isMaximized()) {
@@ -47,9 +56,9 @@ export function createAppWindow(): BrowserWindow {
     appWindow.close();
   });
 
-  appWindow.on('ready-to-show', () => appWindow.show());
+  appWindow.on("ready-to-show", () => appWindow.show());
 
-  appWindow.on('close', () => {
+  appWindow.on("close", () => {
     appWindow = null;
     app.quit();
   });

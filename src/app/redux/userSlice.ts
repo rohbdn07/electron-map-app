@@ -1,61 +1,84 @@
 // eslint-disable-next-line import/named
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import type { RootState } from './store';
-// import { formData } from '../components/Form';
+import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
+import type { RootState } from "./store";
 
-import context from '../../database/dataContextApi';
+import context from "../../contextIPC/users/userContextApi";
 
 export interface UserData {
-    id: string;
-    birthDay: string | null;
-    name: string;
-    email: string;
-    age: number | null;
+  id?: string;
+  birthDay: string | null;
+  name: string;
+  email: string;
+  age: number | null;
 }
 
 interface UsersState {
-    usersList: UserData[];
+  usersList: UserData[];
 }
-
 
 const initialState: UsersState = {
-    usersList: [],
-}
+  usersList: [],
+};
+
+export const getUsersList = createAsyncThunk("users/allUser", async () => {
+  const response: UserData[] = await context.getAllUser("getAllUser");
+  return response;
+});
+
+export const addUserThunk = createAsyncThunk(
+  "users/addUser",
+  async (userData: UserData) => {
+    const newUser = {
+      birthDay: userData.birthDay,
+      name: userData.name,
+      email: userData.email,
+      age: userData.age,
+    };
+    const response: UserData = await context.addUser(newUser);
+    return response;
+  }
+);
 
 export const usersSlice = createSlice({
-  name: 'users',
+  name: "users",
   initialState,
   reducers: {
-    initUsers: (state, action: PayloadAction<UserData[]>) => {
-      state.usersList = action.payload;
-    },
-    addUser: (state, action: PayloadAction<any>) => {
-      const newUser: UserData = {
-        id: action.payload.id,
-        birthDay: action.payload.birthDay,
-        name: action.payload.name,
-        email: action.payload.email,
-        age: action.payload.age
-      }
-      console.log(newUser)
-
-      context.addUser(newUser)
-      
-      state.usersList = [...state.usersList, newUser];
-    },
     deleteUser: (state, action: PayloadAction<string>) => {
-      const index = state.usersList.findIndex(
-        (user) => user.id === action.payload
-      );
-
-    //   context.deleteUser(action.payload)
-
-      state.usersList.splice(index, 1);
+      context.deleteUser(action.payload)
+      if (action.payload) {
+        const index = state.usersList.findIndex(
+          (user) => user.id === action.payload
+        );
+        state.usersList.splice(index, 1);
+      }
     },
+  },
+
+  extraReducers: (builder) => {
+    // Add user list to the state array
+    builder.addCase(
+      getUsersList.fulfilled,
+      (state: UsersState, action: PayloadAction<UserData[]>) => {
+        const reverseData = [...action.payload].reverse();
+        state.usersList = reverseData;
+      }
+    );
+
+    // Add user to the state array
+    builder.addCase(
+      addUserThunk.fulfilled,
+      (state, action: PayloadAction<UserData>) => {
+        console.log("The action payload is", action.payload);
+
+        // const arr =action.payload.concat(state.usersList);
+        // const arr = [...action.payload, state.usersList];
+        state.usersList = [action.payload, ...state.usersList]
+      }
+    );
   },
 });
 
-export const { initUsers, addUser, deleteUser } = usersSlice.actions;
+export const { deleteUser } = usersSlice.actions;
 
 export const selectUser = (state: RootState) => state.users.usersList;
 
