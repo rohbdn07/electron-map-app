@@ -10,7 +10,7 @@ const isComplied = path.extname(__filename).includes("js");
 
 const appDataPath = app.getPath('appData');
 
-const appPath = path.join(appDataPath, 'electron-app');
+const appPath = path.join(appDataPath, 'logset-app');
 console.log('the app Path is ', appDataPath);
 
 const appLocalDatabasePath = path.join(appPath, 'demo.db');
