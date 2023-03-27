@@ -3,6 +3,9 @@ import path from "path";
 import { dbConnection } from "./database/connection";
 // import { dbConnection } from "./database/connection";
 
+const isDevelopment = !app.isPackaged;
+console.log('The application is in development mode', isDevelopment)
+
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 
@@ -23,14 +26,11 @@ export function createAppWindow(): BrowserWindow {
     },
   });
 
-  // if (environment === "development") {
-  //   appWindow.webContents.openDevTools();
-  // }
+  if (isDevelopment) {
+    appWindow.webContents.openDevTools();
+  }
 
   appWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
-
-  // // call to connect database
-  // dbConnection();
 
 
   ipcMain.on("minimizeApp", () => {

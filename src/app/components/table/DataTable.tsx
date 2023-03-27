@@ -61,9 +61,9 @@ export default function DataTable() {
   const rows = users?.map((user: UserData) => createData(user));
 
   const deleteUserHandler = (id: string) => {
-    console.log('the deleted is clicked', id)
+    console.log("the deleted is clicked", id);
     dispatch(deleteUser(id));
-  }
+  };
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -86,7 +86,10 @@ export default function DataTable() {
               <StyledTableCell align="right">{row.birthday}</StyledTableCell>
               <StyledTableCell align="right">{row.age}</StyledTableCell>
               <StyledTableCell align="right">{row.email}</StyledTableCell>
-              <StyledTableCell align="right" onClick={() => deleteUserHandler(row.id)}>
+              <StyledTableCell
+                align="right"
+                onClick={() => deleteUserHandler(row.id)}
+              >
                 <DeleteIcon />
               </StyledTableCell>
             </StyledTableRow>

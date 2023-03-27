@@ -2,26 +2,25 @@ import { useContext, useEffect } from "react";
 import MapContext from "../map/MapContext";
 import OLTileLayer from "ol/layer/Tile";
 
-
 const TileLayer = ({ source, zIndex = 0 }): any => {
-    const { map }: any = useContext(MapContext);
+  const { map }: any = useContext(MapContext);
 
-    useEffect(() => {
-        if (!map) return;
+  useEffect(() => {
+    if (!map) return;
 
-        const tileLayer = new OLTileLayer({
-            source,
-            zIndex,
-        });
-        map.addLayer(tileLayer);
-        tileLayer.setZIndex(zIndex);
+    const tileLayer = new OLTileLayer({
+      source,
+      zIndex,
+    });
+    map.addLayer(tileLayer);
+    tileLayer.setZIndex(zIndex);
 
-        return () => {
-            if (map) {
-                map.removeLayer(tileLayer);
-            }
-        };
-    }, [map]);
-    return null;
+    return () => {
+      if (map) {
+        map.removeLayer(tileLayer);
+      }
+    };
+  }, [map]);
+  return null;
 };
 export default TileLayer;

@@ -13,6 +13,7 @@ import autoUpdate from 'update-electron-app'
 //   logger: require('electron-log')
 // })
 
+
 /**
  * This section is the 'MAIN process hub' in which 'electron' communicate to WINDOW system
  * and acts as a backend unit of the application.
@@ -24,8 +25,6 @@ if (require("electron-squirrel-startup")) {
 
 // call to connect database
 dbConnection();
-
-// app.on("ready", createAppWindow);
 
 app.whenReady().then(() => {
   const appWindow = createAppWindow();
@@ -50,6 +49,8 @@ app.whenReady().then(() => {
 //  */
 service.userService();
 
+
+// close window on quit
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();
