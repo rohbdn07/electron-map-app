@@ -32,6 +32,7 @@ export function createAppWindow(): BrowserWindow {
   // // call to connect database
   // dbConnection();
 
+
   ipcMain.on("minimizeApp", () => {
     appWindow.minimize();
   });

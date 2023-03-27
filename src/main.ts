@@ -5,12 +5,13 @@ import { createAppWindow } from "./appWindow";
 import { dbConnection } from "./database/connection";
 import service from "./services/userService";
 
+import autoUpdate from 'update-electron-app'
+
 // require('update-electron-app')({
 //   repo: 'github-user/repo',
 //   updateInterval: '1 hour',
 //   logger: require('electron-log')
 // })
-
 
 /**
  * This section is the 'MAIN process hub' in which 'electron' communicate to WINDOW system
@@ -24,13 +25,26 @@ if (require("electron-squirrel-startup")) {
 // call to connect database
 dbConnection();
 
-app.on("ready", createAppWindow);
+// app.on("ready", createAppWindow);
 
-app.on("activate", () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createAppWindow();
-  }
-});
+app.whenReady().then(() => {
+  const appWindow = createAppWindow();
+
+  app.on("activate", () => {
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createAppWindow();
+    }
+  });
+
+  autoUpdate({
+    updateInterval: '1 hour',
+    notifyUser: true
+  })
+  appWindow.webContents.send('appVersionUpdate', app.getVersion())
+
+})
+
+
 // /**
 //  * Main process communicate to ------> Services(business logics hub)
 //  */
