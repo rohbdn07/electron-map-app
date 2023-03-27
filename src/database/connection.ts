@@ -2,15 +2,23 @@ import Database from "better-sqlite3";
 import path from "path";
 import { DataSource } from "typeorm";
 import { User } from "./entities/User";
+import { app } from 'electron';
 
-// const db = new Database("database.db");
 
 // check either for dev or prod environment
 const isComplied = path.extname(__filename).includes("js");
 
+const appDataPath = app.getPath('appData');
+
+const appPath = path.join(appDataPath, 'electron-app');
+console.log('the app Path is ', appDataPath);
+
+const appLocalDatabasePath = path.join(appPath, 'demo.db');
+console.log('the appLocalDatabase Path is ', appLocalDatabasePath)
+
 export const AppDataSource = new DataSource({
   type: 'better-sqlite3',
-  database: "./demo.db",
+  database: appLocalDatabasePath,
   synchronize: true,  // MUST set 'false' for production, instead run migration to update.
   logging: true,
   logger: "advanced-console",
@@ -30,5 +38,3 @@ export const dbConnection = async () => {
     console.log("Unable to connect database", error);
   }
 };
-
-// export default db;
