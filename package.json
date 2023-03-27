@@ -3,6 +3,7 @@
   "productName": "electron-app",
   "version": "1.0.0",
   "description": "Basic electron application with openlayers map",
+  "repository": "https://github.com/rohbdn07/electron-map-app",
   "main": "./.webpack/main",
   "scripts": {
     "start": "cross-env NODE_ENV=development electron-forge start",
@@ -62,6 +63,7 @@
     "@mui/system": "^5.11.12",
     "@reduxjs/toolkit": "^1.9.3",
     "better-sqlite3": "^8.2.0",
+    "electron-log": "^4.4.8",
     "electron-squirrel-startup": "^1.0.0",
     "ol": "^7.3.0",
     "react": "^18.2.0",
